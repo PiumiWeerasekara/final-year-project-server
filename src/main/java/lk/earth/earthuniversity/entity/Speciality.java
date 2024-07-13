@@ -41,21 +41,19 @@ public class Speciality {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Speciality that = (Speciality) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(doctors, that.doctors);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return Objects.hash(id, name);
     }
 
-    public Collection<Doctor> getEmployees() {
+    public Collection<Doctor> getDoctors() {
         return doctors;
     }
 
-    public void setEmployees(Collection<Doctor> doctors) {
+    public void setDoctors(Collection<Doctor> doctors) {
         this.doctors = doctors;
     }
 }

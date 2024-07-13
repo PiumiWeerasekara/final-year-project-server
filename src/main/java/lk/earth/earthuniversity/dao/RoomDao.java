@@ -1,6 +1,8 @@
 package lk.earth.earthuniversity.dao;
 
+import lk.earth.earthuniversity.entity.Doctor;
 import lk.earth.earthuniversity.entity.Patient;
+import lk.earth.earthuniversity.entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,16 +10,15 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface PatientDao extends JpaRepository<Patient,Integer> {
+public interface RoomDao extends JpaRepository<Room,Integer> {
 
-    Patient findByNic(String nic);
-    Optional<Patient> findById(Integer id);
+    @Query("SELECT r FROM Room r WHERE r.id = :id")
+    Room findByMyId(@Param("id") Integer id);
 
-    @Query("select p from Patient p where p.id = :id")
-    Patient findByMyId(@Param("id") Integer id);
-
-    @Query("SELECT p from Patient p")
+    @Query("SELECT p FROM Room p")
     List<Patient> findAllNameId();
 
+    @Query(value = "SELECT r.number FROM Room r ORDER BY r.id DESC LIMIT 1", nativeQuery = true)
+    String findLastRoomNumber();
 }
 

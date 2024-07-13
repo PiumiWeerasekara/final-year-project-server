@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
+import lk.earth.earthuniversity.entity.Patient;
 
 
 
@@ -24,6 +25,11 @@ public class RegexController {
     @GetMapping(path ="/users", produces = "application/json")
     public HashMap<String, HashMap<String, String>> user() {
         return RegexProvider.get(new User());
+    }
+
+    @GetMapping(path ="/patient", produces = "application/json")
+    public HashMap<String, HashMap<String, String>> patient() {
+        return RegexProvider.get(new Patient());
     }
 
 

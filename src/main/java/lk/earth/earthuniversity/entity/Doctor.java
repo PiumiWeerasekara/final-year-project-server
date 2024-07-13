@@ -18,17 +18,14 @@ public class Doctor {
     private Integer id;
     @Basic
     @Column(name = "title")
-    //@Pattern(regexp = "^([A-Z][a-z]*[.]?[\\s]?)*([A-Z][a-z]*)$", message = "Invalid Fullname")
     private String title;
 
     @Basic
     @Column(name = "firstName")
-    //@Pattern(regexp = "^([A-Z][a-z]*[.]?[\\s]?)*([A-Z][a-z]*)$", message = "Invalid Fullname")
     private String firstName;
 
     @Basic
     @Column(name = "lastName")
-    //@Pattern(regexp = "^([A-Z][a-z]+)$", message = "Invalid Calligname")
     private String lastName;
     @Basic
     @Column(name = "photo")
@@ -36,11 +33,11 @@ public class Doctor {
 
     @Basic
     @Column(name = "dob")
-    //@RegexPattern(reg = "^\\d{2}-\\d{2}-\\d{2}$", msg = "Invalid Date Format")
+    @RegexPattern(reg = "^\\d{2}-\\d{2}-\\d{2}$", msg = "Invalid Date Format")
     private Date dob;
     @Basic
     @Column(name = "nic")
-    //@Pattern(regexp = "^(([\\d]{9}[vVxX])|([\\d]{12}))$", message = "Invalid NIC")
+    @Pattern(regexp = "^(([\\d]{9}[vVxX])|([\\d]{12}))$", message = "Invalid NIC")
     private String nic;
     @Basic
     @Column(name = "address")
@@ -48,11 +45,11 @@ public class Doctor {
     private String address;
     @Basic
     @Column(name = "contactNo")
-    //@Pattern(regexp = "^0\\d{9}$", message = "Invalid Contact Number")
+    @Pattern(regexp = "^0\\d{9}$", message = "Invalid Contact Number")
     private String contactNo;
     @Basic
     @Column(name = "email")
-    //@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Invalid Landphone Number")
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Invalid Email Address")
     private String email;
     @ManyToOne
     @JoinColumn(name = "gender_id", referencedColumnName = "id", nullable = false)
@@ -60,7 +57,13 @@ public class Doctor {
     @ManyToOne
     @JoinColumn(name = "speciality_id", referencedColumnName = "id", nullable = false)
     private Speciality speciality;
-
+    @Basic
+    @Column(name = "medicalLicenseNo")
+    private String medicalLicenseNo;
+    @Basic
+    @Column(name = "licenseEXPDate")
+    @RegexPattern(reg = "^\\d{2}-\\d{2}-\\d{2}$", msg = "Invalid Date Format")
+    private Date licenseEXPDate;
 
     @JsonIgnore
     @OneToMany(mappedBy = "employee")
@@ -69,7 +72,7 @@ public class Doctor {
     public Doctor() {
     }
 
-    public Doctor(Integer id, String title, String firstName, String lastName, byte[] photo, Date dob, String nic, String address, String contactNo, String email, Gender gender, Speciality speciality, Collection<User> users) {
+    public Doctor(Integer id, String title, String firstName, String lastName, byte[] photo, Date dob, String nic, String address, String contactNo, String email, Gender gender, Speciality speciality, String medicalLicenseNo, Date licenseEXPDate) {
         this.id = id;
         this.title = title;
         this.firstName = firstName;
@@ -82,10 +85,11 @@ public class Doctor {
         this.email = email;
         this.gender = gender;
         this.speciality = speciality;
-        this.users = users;
+        this.medicalLicenseNo = medicalLicenseNo;
+        this.licenseEXPDate = licenseEXPDate;
     }
 
-    public Doctor(Integer id, String title, String firstName, String lastName, String nic, String address, String contactNo, Speciality speciality) {
+    public Doctor(Integer id, String title, String firstName, String lastName, String nic, String address, String contactNo, Speciality speciality ) {
         this.id = id;
         this.title = title;
         this.firstName = firstName;
@@ -140,6 +144,18 @@ public class Doctor {
         return speciality;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
+    public String getMedicalLicenseNo() {
+        return medicalLicenseNo;
+    }
+
+    public Date getLicenseEXPDate() {
+        return licenseEXPDate;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -184,17 +200,29 @@ public class Doctor {
         this.speciality = speciality;
     }
 
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void setMedicalLicenseNo(String medicalLicenseNo) {
+        this.medicalLicenseNo = medicalLicenseNo;
+    }
+
+    public void setLicenseEXPDate(Date licenseEXPDate) {
+        this.licenseEXPDate = licenseEXPDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Doctor doctor = (Doctor) o;
-        return Objects.equals(id, doctor.id) && Objects.equals(title, doctor.title) && Objects.equals(firstName, doctor.firstName) && Objects.equals(lastName, doctor.lastName) && Arrays.equals(photo, doctor.photo) && Objects.equals(dob, doctor.dob) && Objects.equals(nic, doctor.nic) && Objects.equals(address, doctor.address) && Objects.equals(contactNo, doctor.contactNo) && Objects.equals(email, doctor.email) && Objects.equals(gender, doctor.gender) && Objects.equals(speciality, doctor.speciality) && Objects.equals(users, doctor.users);
+        return Objects.equals(id, doctor.id) && Objects.equals(title, doctor.title) && Objects.equals(firstName, doctor.firstName) && Objects.equals(lastName, doctor.lastName) && Arrays.equals(photo, doctor.photo) && Objects.equals(dob, doctor.dob) && Objects.equals(nic, doctor.nic) && Objects.equals(address, doctor.address) && Objects.equals(contactNo, doctor.contactNo) && Objects.equals(email, doctor.email) && Objects.equals(gender, doctor.gender) && Objects.equals(speciality, doctor.speciality) && Objects.equals(medicalLicenseNo, doctor.medicalLicenseNo) && Objects.equals(licenseEXPDate, doctor.licenseEXPDate) && Objects.equals(users, doctor.users);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, title, firstName, lastName, dob, nic, address, contactNo, email, gender, speciality, users);
+        int result = Objects.hash(id, title, firstName, lastName, dob, nic, address, contactNo, email, gender, speciality, medicalLicenseNo, licenseEXPDate, users);
         result = 31 * result + Arrays.hashCode(photo);
         return result;
     }

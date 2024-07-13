@@ -1,7 +1,8 @@
 package lk.earth.earthuniversity.controller;
 
-import lk.earth.earthuniversity.dao.PatientDao;
-import lk.earth.earthuniversity.entity.Patient;
+import lk.earth.earthuniversity.dao.RoomDao;
+import lk.earth.earthuniversity.entity.Doctor;
+import lk.earth.earthuniversity.entity.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,91 +14,87 @@ import java.util.stream.Stream;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/patient")
-public class PatientController {
+@RequestMapping(value = "/room")
+public class RoomController {
 
     @Autowired
-    private PatientDao patientDao;
+    private RoomDao roomDao;
 
     @GetMapping(produces = "application/json")
 //    @PreAuthorize("hasAuthority('employee-select')")
-    public List<Patient> get(@RequestParam HashMap<String, String> params) {
+    public List<Room> get(@RequestParam HashMap<String, String> params) {
 
-        List<Patient> patients = this.patientDao.findAll();
+        List<Room> rooms = this.roomDao.findAll();
 
-        if(params.isEmpty())  return patients;
+        if (params.isEmpty()) return rooms;
 
-        String name= params.get("name");
-        String nic= params.get("nic");
-        Stream<Patient> estream = patients.stream();
-
-        if(nic!=null) estream = estream.filter(e -> e.getNic().contains(nic));
-        if(name!=null) estream = estream.filter(e -> e.getFirstName().contains(name) || e.getLastName().contains(name));
+        Stream<Room> estream = rooms.stream();
 
         return estream.collect(Collectors.toList());
-
-    }
-    @GetMapping(path ="/list",produces = "application/json")
-    public List<Patient> get() {
-
-        List<Patient> patients = this.patientDao.findAllNameId();
-
-        patients = patients.stream().map(
-                patient -> {
-                    Patient p = new Patient(patient.getId(), patient.getTitle(), patient.getFirstName(), patient.getLastName(), patient.getDob(), patient.getNic(), patient.getAddress(), patient.getContactNo(), patient.getEmail(), patient.getGender(), patient.getGuardianName(), patient.getGuardianContactNo());
-                    return  p;
-                }
-        ).collect(Collectors.toList());
-
-        return patients;
 
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
 //    @PreAuthorize("hasAuthority('Employee-Update')")
-    public HashMap<String,String> save(@RequestBody Patient patient){
+    public HashMap<String, String> save(@RequestBody Room room) {
 
-        HashMap<String,String> responce = new HashMap<>();
-        String errors="";
+        HashMap<String, String> responce = new HashMap<>();
+        String errors = "";
 
-        Patient pat = patientDao.findByNic(patient.getNic());
 
-//        if(emp1!=null && employee.getId()!=emp1.getId())
-//            errors = errors+"<br> Existing Number";
-        if(pat!=null && patient.getId()!=pat.getId())
-            errors = errors+"<br> Existing NIC";
+        if (errors == "") roomDao.save(room);
+        else errors = "Server Validation Errors : <br> " + errors;
 
-        if(errors=="") patientDao.save(patient);
-        else errors = "Server Validation Errors : <br> "+errors;
-
-        responce.put("id",String.valueOf(patient.getId()));
-        responce.put("url","/patient/"+patient.getId());
-        responce.put("errors",errors);
+        responce.put("id", String.valueOf(room.getId()));
+        responce.put("url", "/room/" + room.getId());
+        responce.put("errors", errors);
 
         return responce;
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public HashMap<String,String> delete(@PathVariable Integer id){
+    public HashMap<String, String> delete(@PathVariable Integer id) {
 
-        HashMap<String,String> responce = new HashMap<>();
-        String errors="";
+        HashMap<String, String> responce = new HashMap<>();
+        String errors = "";
 
-        Patient pat = patientDao.findByMyId(id);
+        Room r = roomDao.findByMyId(id);
 
-        if(pat==null)
-            errors = errors+"<br> Patient Does Not Existed";
+        if (r == null)
+            errors = errors + "<br> Room Does Not Existed";
 
-        if(errors=="") patientDao.delete(pat);
-        else errors = "Server Validation Errors : <br> "+errors;
+        if (errors == "") roomDao.delete(r);
+        else errors = "Server Validation Errors : <br> " + errors;
 
-        responce.put("id",String.valueOf(id));
-        responce.put("url","/patient/"+id);
-        responce.put("errors",errors);
+        responce.put("id", String.valueOf(id));
+        responce.put("url", "/room/" + id);
+        responce.put("errors", errors);
 
         return responce;
+    }
+
+    @GetMapping(path = "/number", produces = "text/plain")
+    public String get() {
+
+
+        String lastRoomNumber = roomDao.findLastRoomNumber();
+
+        if (lastRoomNumber == null || lastRoomNumber.isEmpty()) {
+            return "00001";
+        }
+
+        int nextRoomNumberInt;
+        try {
+            nextRoomNumberInt = Integer.parseInt(lastRoomNumber) + 1;
+        } catch (NumberFormatException e) {
+            // Handle the case where the room number is not a valid integer
+            throw new IllegalStateException("Invalid room number format: " + lastRoomNumber, e);
+        }
+
+        // Format the new room number to 5 digits, zero-padded
+        return String.format("%05d", nextRoomNumberInt);
     }
 }
 

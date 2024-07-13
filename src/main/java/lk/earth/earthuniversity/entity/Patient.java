@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-public class Doctor {
+public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -27,9 +27,6 @@ public class Doctor {
     @Basic
     @Column(name = "lastName")
     private String lastName;
-    @Basic
-    @Column(name = "photo")
-    private byte[] photo;
 
     @Basic
     @Column(name = "dob")
@@ -54,177 +51,145 @@ public class Doctor {
     @ManyToOne
     @JoinColumn(name = "gender_id", referencedColumnName = "id", nullable = false)
     private Gender gender;
-    @ManyToOne
-    @JoinColumn(name = "speciality_id", referencedColumnName = "id", nullable = false)
-    private Speciality speciality;
+
     @Basic
-    @Column(name = "medicalLicenseNo")
-    private String medicalLicenseNo;
+    @Column(name = "guardianName")
+    private String guardianName;
     @Basic
-    @Column(name = "licenseEXPDate")
-    @RegexPattern(reg = "^\\d{2}-\\d{2}-\\d{2}$", msg = "Invalid Date Format")
-    private Date licenseEXPDate;
+    @Column(name = "guardianContactNo")
+    @Pattern(regexp = "^0\\d{9}$", message = "Invalid Contact Number")
+    private String guardianContactNo;
 
     @JsonIgnore
     @OneToMany(mappedBy = "employee")
     private Collection<User> users;
 
-    public Doctor() {
+    public Patient() {
     }
 
-    public Doctor(Integer id, String title, String firstName, String lastName, byte[] photo, Date dob, String nic, String address, String contactNo, String email, Gender gender, Speciality speciality, String medicalLicenseNo, Date licenseEXPDate) {
+    public Patient(Integer id, String title, String firstName, String lastName, Date dob, String nic, String address, String contactNo, String email, Gender gender, String guardianName, String guardianContactNo) {
         this.id = id;
         this.title = title;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.photo = photo;
         this.dob = dob;
         this.nic = nic;
         this.address = address;
         this.contactNo = contactNo;
         this.email = email;
         this.gender = gender;
-        this.speciality = speciality;
-        this.medicalLicenseNo = medicalLicenseNo;
-        this.licenseEXPDate = licenseEXPDate;
-    }
-
-    public Doctor(Integer id, String title, String firstName, String lastName, String nic, String address, String contactNo, Speciality speciality ) {
-        this.id = id;
-        this.title = title;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.nic = nic;
-        this.address = address;
-        this.contactNo = contactNo;
-        this.speciality = speciality;
+        this.guardianName = guardianName;
+        this.guardianContactNo = guardianContactNo;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public byte[] getPhoto() {
-        return photo;
-    }
-
-    public Date getDob() {
-        return dob;
-    }
-
-    public String getNic() {
-        return nic;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getContactNo() {
-        return contactNo;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Speciality getSpeciality() {
-        return speciality;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public String getMedicalLicenseNo() {
-        return medicalLicenseNo;
-    }
-
-    public Date getLicenseEXPDate() {
-        return licenseEXPDate;
-    }
-
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
+    public Date getDob() {
+        return dob;
     }
 
     public void setDob(Date dob) {
         this.dob = dob;
     }
 
+    public String getNic() {
+        return nic;
+    }
+
     public void setNic(String nic) {
         this.nic = nic;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
+    public String getContactNo() {
+        return contactNo;
+    }
+
     public void setContactNo(String contactNo) {
         this.contactNo = contactNo;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setSpeciality(Speciality speciality) {
-        this.speciality = speciality;
+    public Gender getGender() {
+        return gender;
     }
 
     public void setGender(Gender gender) {
         this.gender = gender;
     }
 
-    public void setMedicalLicenseNo(String medicalLicenseNo) {
-        this.medicalLicenseNo = medicalLicenseNo;
+    public String getGuardianName() {
+        return guardianName;
     }
 
-    public void setLicenseEXPDate(Date licenseEXPDate) {
-        this.licenseEXPDate = licenseEXPDate;
+    public void setGuardianName(String guardianName) {
+        this.guardianName = guardianName;
     }
+
+    public String getGuardianContactNo() {
+        return guardianContactNo;
+    }
+
+    public void setGuardianContactNo(String guardianContactNo) {
+        this.guardianContactNo = guardianContactNo;
+    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Doctor doctor = (Doctor) o;
-        return Objects.equals(id, doctor.id) && Objects.equals(title, doctor.title) && Objects.equals(firstName, doctor.firstName) && Objects.equals(lastName, doctor.lastName) && Arrays.equals(photo, doctor.photo) && Objects.equals(dob, doctor.dob) && Objects.equals(nic, doctor.nic) && Objects.equals(address, doctor.address) && Objects.equals(contactNo, doctor.contactNo) && Objects.equals(email, doctor.email) && Objects.equals(gender, doctor.gender) && Objects.equals(speciality, doctor.speciality) && Objects.equals(medicalLicenseNo, doctor.medicalLicenseNo) && Objects.equals(licenseEXPDate, doctor.licenseEXPDate) && Objects.equals(users, doctor.users);
+        Patient patient = (Patient) o;
+        return Objects.equals(id, patient.id) && Objects.equals(title, patient.title) && Objects.equals(firstName, patient.firstName) && Objects.equals(lastName, patient.lastName) && Objects.equals(dob, patient.dob) && Objects.equals(nic, patient.nic) && Objects.equals(address, patient.address) && Objects.equals(contactNo, patient.contactNo) && Objects.equals(email, patient.email) && Objects.equals(gender, patient.gender) && Objects.equals(guardianName, patient.guardianName) && Objects.equals(guardianContactNo, patient.guardianContactNo) && Objects.equals(users, patient.users);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, title, firstName, lastName, dob, nic, address, contactNo, email, gender, speciality, medicalLicenseNo, licenseEXPDate, users);
-        result = 31 * result + Arrays.hashCode(photo);
-        return result;
+        return Objects.hash(id, title, firstName, lastName, dob, nic, address, contactNo, email, gender, guardianName, guardianContactNo, users);
     }
 
     public Collection<User> getUsers() {
