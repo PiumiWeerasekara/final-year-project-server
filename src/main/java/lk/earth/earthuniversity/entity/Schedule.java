@@ -7,21 +7,113 @@ import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Time;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-public class Schedule implements Serializable{
+public class Schedule{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private Integer id;
 
     @Column(name = "scheduleDate")
-    private String scheduleDate;
+    @RegexPattern(reg = "^\\d{2}-\\d{2}-\\d{2}$", msg = "Invalid Date Format")
+    private Date scheduleDate;
+
+    @Column(name = "startTime")
+    private String startTime;
+
+    @Column(name = "endTime")
+    private String endTime;
 
     @ManyToOne
-    @JoinColumn(name = "doctorId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "room_id", referencedColumnName = "id", nullable = false)
+    private Room room;
+    @ManyToOne
+    @JoinColumn(name = "doctor_id", referencedColumnName = "id", nullable = false)
     private Doctor doctor;
+
+    public Schedule(){
+
+    }
+    public Schedule(Integer id, Date scheduleDate, String startTime, String endTime, Room room, Doctor doctor) {
+        this.id = id;
+        this.scheduleDate = scheduleDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.room = room;
+        this.doctor = doctor;
+    }
+
+    public Schedule(Integer id, Doctor doctor, Date scheduleDate, Room room) {
+        this.id = id;
+        this.scheduleDate = scheduleDate;
+        this.room = room;
+        this.doctor = doctor;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Date getScheduleDate() {
+        return scheduleDate;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setScheduleDate(Date scheduleDate) {
+        this.scheduleDate = scheduleDate;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Schedule schedule = (Schedule) o;
+        return Objects.equals(id, schedule.id) && Objects.equals(scheduleDate, schedule.scheduleDate) && Objects.equals(startTime, schedule.startTime) && Objects.equals(endTime, schedule.endTime) && Objects.equals(room, schedule.room) && Objects.equals(doctor, schedule.doctor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, scheduleDate, startTime, endTime, room, doctor);
+    }
 }

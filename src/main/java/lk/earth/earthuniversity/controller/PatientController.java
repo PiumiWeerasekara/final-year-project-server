@@ -20,7 +20,6 @@ public class PatientController {
     private PatientDao patientDao;
 
     @GetMapping(produces = "application/json")
-//    @PreAuthorize("hasAuthority('employee-select')")
     public List<Patient> get(@RequestParam HashMap<String, String> params) {
 
         List<Patient> patients = this.patientDao.findAll();
