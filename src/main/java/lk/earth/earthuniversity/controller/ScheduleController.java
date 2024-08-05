@@ -1,9 +1,6 @@
 package lk.earth.earthuniversity.controller;
 
-import lk.earth.earthuniversity.dao.DoctorScheduleDao;
 import lk.earth.earthuniversity.dao.ScheduleDao;
-import lk.earth.earthuniversity.entity.Doctor;
-import lk.earth.earthuniversity.entity.DoctorSchedule;
 import lk.earth.earthuniversity.entity.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,6 +81,27 @@ public class ScheduleController {
 
         return responce;
     }
+
+    @GetMapping(path = "/availableSchedules", produces = "application/json")
+    //@PreAuthorize("hasAuthority('employee-select')")
+    public List<Schedule> getAvailableSchedules(@RequestParam HashMap<String, String> params) {
+
+        List<Schedule> schedules = this.scheduleDao.findAllNameId();
+
+        if(params.isEmpty())  return schedules;
+
+        String doctorId= params.get("doctorId");
+        String scheduleDate= params.get("scheduleDate");
+        String specialityId= params.get("specialityId");
+        Stream<Schedule> estream = schedules.stream();
+
+        if(doctorId!=null) estream = estream.filter(e -> e.getDoctor().getId()==Integer.parseInt(doctorId));
+        if(scheduleDate!=null) estream = estream.filter(e -> e.getScheduleDate().equals(scheduleDate));
+        if(specialityId!=null) estream = estream.filter(e -> e.getDoctor().getSpeciality().getId()==Integer.parseInt(specialityId));
+
+        return estream.collect(Collectors.toList());
+
+    }
 //
 //    @DeleteMapping("/{id}")
 //    @ResponseStatus(HttpStatus.CREATED)
@@ -105,6 +124,15 @@ public class ScheduleController {
 //
 //        return responce;
 //    }
+
+    @GetMapping(path ="/byScheduleId",produces = "application/json")
+    public Optional<Schedule> get(@RequestParam("id") Integer id) {
+
+        Schedule schedule = scheduleDao.findByMyId(id);
+
+        return Optional.ofNullable(schedule);
+
+    }
 }
 
 

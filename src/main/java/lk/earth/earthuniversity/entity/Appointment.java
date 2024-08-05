@@ -37,15 +37,12 @@ public class Appointment {
     @JoinColumn(name = "patient_id", referencedColumnName = "id", nullable = false)
     private Patient patient;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User user;
 
     public Appointment() {
 
     }
 
-    public Appointment(Integer id, Date appointmentDate, String startTime, String endTime, int appointmentNo, int status, Schedule schedule, Patient patient, User user) {
+    public Appointment(Integer id, Date appointmentDate, String startTime, String endTime, int appointmentNo, int status, Schedule schedule, Patient patient) {
         this.id = id;
         this.appointmentDate = appointmentDate;
         this.startTime = startTime;
@@ -54,7 +51,6 @@ public class Appointment {
         this.status = status;
         this.schedule = schedule;
         this.patient = patient;
-        this.user = user;
     }
 
     public Integer getId() {
@@ -121,24 +117,16 @@ public class Appointment {
         this.patient = patient;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Appointment that = (Appointment) o;
-        return appointmentNo == that.appointmentNo && status == that.status && Objects.equals(id, that.id) && Objects.equals(appointmentDate, that.appointmentDate) && Objects.equals(startTime, that.startTime) && Objects.equals(endTime, that.endTime) && Objects.equals(schedule, that.schedule) && Objects.equals(patient, that.patient) && Objects.equals(user, that.user);
+        return appointmentNo == that.appointmentNo && status == that.status && Objects.equals(id, that.id) && Objects.equals(appointmentDate, that.appointmentDate) && Objects.equals(startTime, that.startTime) && Objects.equals(endTime, that.endTime) && Objects.equals(schedule, that.schedule) && Objects.equals(patient, that.patient);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, appointmentDate, startTime, endTime, appointmentNo, status, schedule, patient, user);
+        return Objects.hash(id, appointmentDate, startTime, endTime, appointmentNo, status, schedule, patient);
     }
 }
