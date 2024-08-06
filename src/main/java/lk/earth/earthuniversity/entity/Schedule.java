@@ -37,23 +37,33 @@ public class Schedule{
     @JoinColumn(name = "doctor_id", referencedColumnName = "id", nullable = false)
     private Doctor doctor;
 
+    @Column(name = "noOfPatient")
+    private Integer noOfPatient;
+
+    @Column(name = "status")
+    private Integer status;
+
     public Schedule(){
 
     }
-    public Schedule(Integer id, Date scheduleDate, String startTime, String endTime, Room room, Doctor doctor) {
+
+    public Schedule(Integer id, Date scheduleDate, String startTime, String endTime, Room room, Doctor doctor, Integer noOfPatient, Integer status) {
         this.id = id;
         this.scheduleDate = scheduleDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.room = room;
         this.doctor = doctor;
+        this.noOfPatient = noOfPatient;
+        this.status = status;
     }
 
-    public Schedule(Integer id, Doctor doctor, Date scheduleDate, Room room) {
+    public Schedule(Integer id, Doctor doctor, Date scheduleDate, Room room, int noOfPatient) {
         this.id = id;
         this.scheduleDate = scheduleDate;
         this.room = room;
         this.doctor = doctor;
+        this.noOfPatient = noOfPatient;
     }
 
     public Integer getId() {
@@ -104,16 +114,32 @@ public class Schedule{
         this.doctor = doctor;
     }
 
+    public Integer getNoOfPatient() {
+        return noOfPatient;
+    }
+
+    public void setNoOfPatient(Integer noOfPatient) {
+        this.noOfPatient = noOfPatient;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Schedule schedule = (Schedule) o;
-        return Objects.equals(id, schedule.id) && Objects.equals(scheduleDate, schedule.scheduleDate) && Objects.equals(startTime, schedule.startTime) && Objects.equals(endTime, schedule.endTime) && Objects.equals(room, schedule.room) && Objects.equals(doctor, schedule.doctor);
+        return Objects.equals(id, schedule.id) && Objects.equals(scheduleDate, schedule.scheduleDate) && Objects.equals(startTime, schedule.startTime) && Objects.equals(endTime, schedule.endTime) && Objects.equals(room, schedule.room) && Objects.equals(doctor, schedule.doctor) && Objects.equals(noOfPatient, schedule.noOfPatient) && Objects.equals(status, schedule.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, scheduleDate, startTime, endTime, room, doctor);
+        return Objects.hash(id, scheduleDate, startTime, endTime, room, doctor, noOfPatient, status);
     }
 }

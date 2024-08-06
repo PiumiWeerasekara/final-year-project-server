@@ -1,5 +1,7 @@
 package lk.earth.earthuniversity.entity;
 
+import java.util.Objects;
+
 public class AppointmentSearch {
     private String scheduleDate;
     private String startTime;
@@ -8,17 +10,19 @@ public class AppointmentSearch {
     private int id;
     private int doctorId;
     private int specialityId;
+    private int noOfPatient;
 
     // Constructor
 
 
-    public AppointmentSearch(String scheduleDate, String startTime, String nextAppointmentNo, int id, int doctorId, int specialityId) {
+    public AppointmentSearch(String scheduleDate, String startTime, String nextAppointmentNo, int id, int doctorId, int specialityId, int noOfPatient) {
         this.scheduleDate = scheduleDate;
         this.startTime = startTime;
         this.nextAppointmentNo = nextAppointmentNo;
         this.id = id;
         this.doctorId = doctorId;
         this.specialityId = specialityId;
+        this.noOfPatient = noOfPatient;
     }
 
     // Getters and Setters
@@ -68,5 +72,26 @@ public class AppointmentSearch {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getNoOfPatient() {
+        return noOfPatient;
+    }
+
+    public void setNoOfPatient(int noOfPatient) {
+        this.noOfPatient = noOfPatient;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AppointmentSearch that = (AppointmentSearch) o;
+        return id == that.id && doctorId == that.doctorId && specialityId == that.specialityId && noOfPatient == that.noOfPatient && Objects.equals(scheduleDate, that.scheduleDate) && Objects.equals(startTime, that.startTime) && Objects.equals(nextAppointmentNo, that.nextAppointmentNo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(scheduleDate, startTime, nextAppointmentNo, id, doctorId, specialityId, noOfPatient);
     }
 }
