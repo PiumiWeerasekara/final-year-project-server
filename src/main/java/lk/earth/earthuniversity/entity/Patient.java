@@ -60,6 +60,9 @@ public class Patient {
     @Pattern(regexp = "^0\\d{9}$", message = "Invalid Contact Number")
     private String guardianContactNo;
 
+    @Column(name = "status")
+    private int status;
+
     @JsonIgnore
     @OneToMany(mappedBy = "employee")
     private Collection<User> users;
@@ -67,7 +70,7 @@ public class Patient {
     public Patient() {
     }
 
-    public Patient(Integer id, String title, String firstName, String lastName, Date dob, String nic, String address, String contactNo, String email, Gender gender, String guardianName, String guardianContactNo) {
+    public Patient(Integer id, String title, String firstName, String lastName, Date dob, String nic, String address, String contactNo, String email, Gender gender, String guardianName, String guardianContactNo, int status) {
         this.id = id;
         this.title = title;
         this.firstName = firstName;
@@ -80,6 +83,7 @@ public class Patient {
         this.gender = gender;
         this.guardianName = guardianName;
         this.guardianContactNo = guardianContactNo;
+        this.status = status;
     }
 
     public Integer getId() {
@@ -178,18 +182,25 @@ public class Patient {
         this.guardianContactNo = guardianContactNo;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Patient patient = (Patient) o;
-        return Objects.equals(id, patient.id) && Objects.equals(title, patient.title) && Objects.equals(firstName, patient.firstName) && Objects.equals(lastName, patient.lastName) && Objects.equals(dob, patient.dob) && Objects.equals(nic, patient.nic) && Objects.equals(address, patient.address) && Objects.equals(contactNo, patient.contactNo) && Objects.equals(email, patient.email) && Objects.equals(gender, patient.gender) && Objects.equals(guardianName, patient.guardianName) && Objects.equals(guardianContactNo, patient.guardianContactNo) && Objects.equals(users, patient.users);
+        return status == patient.status && Objects.equals(id, patient.id) && Objects.equals(title, patient.title) && Objects.equals(firstName, patient.firstName) && Objects.equals(lastName, patient.lastName) && Objects.equals(dob, patient.dob) && Objects.equals(nic, patient.nic) && Objects.equals(address, patient.address) && Objects.equals(contactNo, patient.contactNo) && Objects.equals(email, patient.email) && Objects.equals(gender, patient.gender) && Objects.equals(guardianName, patient.guardianName) && Objects.equals(guardianContactNo, patient.guardianContactNo) && Objects.equals(users, patient.users);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, firstName, lastName, dob, nic, address, contactNo, email, gender, guardianName, guardianContactNo, users);
+        return Objects.hash(id, title, firstName, lastName, dob, nic, address, contactNo, email, gender, guardianName, guardianContactNo, status, users);
     }
 
     public Collection<User> getUsers() {

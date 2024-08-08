@@ -2,6 +2,7 @@ package lk.earth.earthuniversity.dao;
 
 import lk.earth.earthuniversity.entity.Appointment;
 import lk.earth.earthuniversity.entity.AppointmentSearch;
+import lk.earth.earthuniversity.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -42,5 +43,8 @@ public interface AppointmentDao extends JpaRepository<Appointment, Integer> {
     @Transactional
     @Query("UPDATE Appointment s SET s.status = 3 WHERE s.id = :id")
     void updateStatusAsPrescribed(@Param("id") Integer id);
+
+    @Query(value = "SELECT a.* FROM Appointment a WHERE a.appointmentDate > CURRENT_DATE AND a.status=1 AND a.patient_id = :id", nativeQuery = true)
+    List<Appointment> findUpcomingAppointmentsByPatientID(Integer id);
 }
 

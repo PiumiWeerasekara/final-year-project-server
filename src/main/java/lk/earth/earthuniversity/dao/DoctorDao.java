@@ -3,9 +3,11 @@ package lk.earth.earthuniversity.dao;
 import lk.earth.earthuniversity.entity.Doctor;
 import lk.earth.earthuniversity.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,5 +24,9 @@ public interface DoctorDao extends JpaRepository<Doctor,Integer> {
     @Query("SELECT d from Doctor d")
     List<Doctor> findAllNameId();
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE Doctor s SET s.status = 0 WHERE s.id = :id")
+    void updateStatusAsinactive(@Param("id") Integer id);
 }
 

@@ -1,5 +1,6 @@
 package lk.earth.earthuniversity.dao;
 
+import lk.earth.earthuniversity.entity.Appointment;
 import lk.earth.earthuniversity.entity.Doctor;
 import lk.earth.earthuniversity.entity.Employee;
 import lk.earth.earthuniversity.entity.Schedule;
@@ -49,6 +50,7 @@ public interface ScheduleDao extends JpaRepository<Schedule, Integer> {
                                            @Param("startTime") String startTime,
                                            @Param("endTime") String endTime);
 
-
+    @Query(value = "SELECT s.* FROM Schedule s WHERE s.scheduleDate > CURRENT_DATE AND s.status=1 AND s.doctor_id = :id", nativeQuery = true)
+    List<Schedule> findUpComingSchedulesByDoctorID(Integer id);
 }
 

@@ -1,10 +1,8 @@
 package lk.earth.earthuniversity.controller;
 import lk.earth.earthuniversity.dao.DoctorDao;
 import lk.earth.earthuniversity.dao.EmployeeDao;
-import lk.earth.earthuniversity.entity.Doctor;
-import lk.earth.earthuniversity.entity.Employee;
-import lk.earth.earthuniversity.entity.Gender;
-import lk.earth.earthuniversity.entity.Speciality;
+import lk.earth.earthuniversity.dao.ScheduleDao;
+import lk.earth.earthuniversity.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +21,8 @@ public class DoctorController {
 
     @Autowired
     private DoctorDao doctorDao;
+    @Autowired
+    private ScheduleDao scheduleDao;
 
     @GetMapping(produces = "application/json")
 //    @PreAuthorize("hasAuthority('employee-select')")
@@ -39,7 +39,7 @@ public class DoctorController {
 
         if(specialityId!=null) estream = estream.filter(e -> e.getSpeciality().getId()==Integer.parseInt(specialityId));
         if(nic!=null) estream = estream.filter(e -> e.getNic().contains(nic));
-        if(name!=null) estream = estream.filter(e -> e.getFirstName().contains(name) || e.getLastName().contains(name));
+        if(name!=null) estream = estream.filter(e -> e.getFirstName().toLowerCase().contains(name.toLowerCase()) || e.getLastName().toLowerCase().contains(name.toLowerCase()));
 
         return estream.collect(Collectors.toList());
 
@@ -51,7 +51,7 @@ public class DoctorController {
 
         doctors = doctors.stream().map(
                 doctor -> {
-                    Doctor d = new Doctor(doctor.getId(), doctor.getTitle(), doctor.getFirstName(), doctor.getLastName(), doctor.getPhoto(), doctor.getDob(), doctor.getNic(), doctor.getAddress(), doctor.getContactNo(), doctor.getEmail(), doctor.getGender(), doctor.getSpeciality(), doctor.getMedicalLicenseNo(), doctor.getLicenseEXPDate());
+                    Doctor d = new Doctor(doctor.getId(), doctor.getTitle(), doctor.getFirstName(), doctor.getLastName(), doctor.getPhoto(), doctor.getDob(), doctor.getNic(), doctor.getAddress(), doctor.getContactNo(), doctor.getEmail(), doctor.getGender(), doctor.getSpeciality(), doctor.getMedicalLicenseNo(), doctor.getStatus(), doctor.getLicenseEXPDate());
                     return  d;
                 }
         ).collect(Collectors.toList());
@@ -98,6 +98,33 @@ public class DoctorController {
             errors = errors+"<br> Doctor Does Not Existed";
 
         if(errors=="") doctorDao.delete(doc);
+        else errors = "Server Validation Errors : <br> "+errors;
+
+        responce.put("id",String.valueOf(id));
+        responce.put("url","/doctor/"+id);
+        responce.put("errors",errors);
+
+        return responce;
+    }
+
+    @PostMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public HashMap<String,String> inactive(@PathVariable Integer id){
+
+        HashMap<String,String> responce = new HashMap<>();
+        String errors="";
+
+        Doctor doc = doctorDao.findByMyId(id);
+
+        List<Schedule> sch = scheduleDao.findUpComingSchedulesByDoctorID(id);
+
+        if(doc==null)
+            errors = errors+"<br> Doctor Does Not Existed";
+
+        else if(sch.size()>0)
+            errors = errors+"Doctor has upcoming Schedules";
+
+        if(errors=="") doctorDao.updateStatusAsinactive(id);
         else errors = "Server Validation Errors : <br> "+errors;
 
         responce.put("id",String.valueOf(id));

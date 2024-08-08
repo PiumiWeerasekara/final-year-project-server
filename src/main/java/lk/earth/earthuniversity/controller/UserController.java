@@ -2,6 +2,7 @@ package lk.earth.earthuniversity.controller;
 
 
 import lk.earth.earthuniversity.dao.UserDao;
+import lk.earth.earthuniversity.entity.Schedule;
 import lk.earth.earthuniversity.entity.User;
 import lk.earth.earthuniversity.entity.Userrole;
 import org.springframework.beans.BeanUtils;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -146,5 +148,12 @@ public class UserController {
 
         return responce;
     }
+    @GetMapping(path ="/byName",produces = "application/json")
+    public Optional<User> get(@RequestParam("name") String name) {
 
+        User user = userdao.findByName(name);
+
+        return Optional.ofNullable(user);
+
+    }
 }

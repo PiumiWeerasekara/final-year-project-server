@@ -53,7 +53,7 @@ public class AppointmentController {
 
         if (nic != null) estream = estream.filter(e -> e.getPatient().getNic().contains(nic));
         if (name != null)
-            estream = estream.filter(e -> e.getPatient().getFirstName().contains(name) || e.getPatient().getLastName().contains(name));
+            estream = estream.filter(e -> e.getPatient().getFirstName().toLowerCase().contains(name.toLowerCase()) || e.getPatient().getLastName().toLowerCase().contains(name.toLowerCase()));
         //estream = estream.filter(e -> e.getPatient().getFirstName().contains(name) || e.getPatient().getLastName().contains(name));
         if (doctorId != null)
             estream = estream.filter(e -> e.getSchedule().getDoctor().getId() == Integer.parseInt(doctorId));
@@ -310,7 +310,7 @@ public class AppointmentController {
 
         if (nic != null) estream = estream.filter(e -> e.getPatient().getNic().contains(nic));
         if (name != null)
-            estream = estream.filter(e -> e.getPatient().getFirstName().contains(name) || e.getPatient().getLastName().contains(name));
+            estream = estream.filter(e -> e.getPatient().getFirstName().toLowerCase().contains(name.toLowerCase()) || e.getPatient().getLastName().toLowerCase().contains(name.toLowerCase()));
         if (appointmentNo != null)
             estream = estream.filter(e -> e.getAppointmentNo() == (Integer.parseInt(appointmentNo)));
 

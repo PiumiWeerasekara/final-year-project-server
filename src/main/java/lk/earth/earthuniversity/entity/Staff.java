@@ -7,11 +7,10 @@ import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.sql.Date;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-public class Doctor {
+public class Staff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -54,29 +53,18 @@ public class Doctor {
     @ManyToOne
     @JoinColumn(name = "gender_id", referencedColumnName = "id", nullable = false)
     private Gender gender;
+
     @ManyToOne
-    @JoinColumn(name = "speciality_id", referencedColumnName = "id", nullable = false)
-    private Speciality speciality;
-    @Basic
-    @Column(name = "medicalLicenseNo")
-    private String medicalLicenseNo;
+    @JoinColumn(name = "staff_type_id", referencedColumnName = "id", nullable = false)
+    private StaffType staffType;
 
     @Column(name = "status")
     private int status;
 
-    @Basic
-    @Column(name = "licenseEXPDate")
-    @RegexPattern(reg = "^\\d{2}-\\d{2}-\\d{2}$", msg = "Invalid Date Format")
-    private Date licenseEXPDate;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "employee")
-    private Collection<User> users;
-
-    public Doctor() {
+    public Staff() {
     }
 
-    public Doctor(Integer id, String title, String firstName, String lastName, byte[] photo, Date dob, String nic, String address, String contactNo, String email, Gender gender, Speciality speciality, String medicalLicenseNo, int status, Date licenseEXPDate) {
+    public Staff(Integer id, String title, String firstName, String lastName, byte[] photo, Date dob, String nic, String address, String contactNo, String email, Gender gender, StaffType staffType, int status) {
         this.id = id;
         this.title = title;
         this.firstName = firstName;
@@ -88,13 +76,11 @@ public class Doctor {
         this.contactNo = contactNo;
         this.email = email;
         this.gender = gender;
-        this.speciality = speciality;
-        this.medicalLicenseNo = medicalLicenseNo;
+        this.staffType = staffType;
         this.status = status;
-        this.licenseEXPDate = licenseEXPDate;
     }
 
-    public Doctor(Integer id, String title, String firstName, String lastName, String nic, String address, String contactNo, Speciality speciality ) {
+    public Staff(Integer id, String title, String firstName, String lastName, String nic, String address, String contactNo) {
         this.id = id;
         this.title = title;
         this.firstName = firstName;
@@ -102,7 +88,6 @@ public class Doctor {
         this.nic = nic;
         this.address = address;
         this.contactNo = contactNo;
-        this.speciality = speciality;
     }
 
     public Integer getId() {
@@ -145,21 +130,11 @@ public class Doctor {
         return email;
     }
 
-    public Speciality getSpeciality() {
-        return speciality;
-    }
 
     public Gender getGender() {
         return gender;
     }
 
-    public String getMedicalLicenseNo() {
-        return medicalLicenseNo;
-    }
-
-    public Date getLicenseEXPDate() {
-        return licenseEXPDate;
-    }
 
     public void setId(Integer id) {
         this.id = id;
@@ -201,20 +176,8 @@ public class Doctor {
         this.email = email;
     }
 
-    public void setSpeciality(Speciality speciality) {
-        this.speciality = speciality;
-    }
-
     public void setGender(Gender gender) {
         this.gender = gender;
-    }
-
-    public void setMedicalLicenseNo(String medicalLicenseNo) {
-        this.medicalLicenseNo = medicalLicenseNo;
-    }
-
-    public void setLicenseEXPDate(Date licenseEXPDate) {
-        this.licenseEXPDate = licenseEXPDate;
     }
 
     public int getStatus() {
@@ -225,26 +188,26 @@ public class Doctor {
         this.status = status;
     }
 
+    public StaffType getStaffType() {
+        return staffType;
+    }
+
+    public void setStaffType(StaffType staffType) {
+        this.staffType = staffType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Doctor doctor = (Doctor) o;
-        return status == doctor.status && Objects.equals(id, doctor.id) && Objects.equals(title, doctor.title) && Objects.equals(firstName, doctor.firstName) && Objects.equals(lastName, doctor.lastName) && Arrays.equals(photo, doctor.photo) && Objects.equals(dob, doctor.dob) && Objects.equals(nic, doctor.nic) && Objects.equals(address, doctor.address) && Objects.equals(contactNo, doctor.contactNo) && Objects.equals(email, doctor.email) && Objects.equals(gender, doctor.gender) && Objects.equals(speciality, doctor.speciality) && Objects.equals(medicalLicenseNo, doctor.medicalLicenseNo) && Objects.equals(licenseEXPDate, doctor.licenseEXPDate) && Objects.equals(users, doctor.users);
+        Staff staff = (Staff) o;
+        return status == staff.status && Objects.equals(id, staff.id) && Objects.equals(title, staff.title) && Objects.equals(firstName, staff.firstName) && Objects.equals(lastName, staff.lastName) && Arrays.equals(photo, staff.photo) && Objects.equals(dob, staff.dob) && Objects.equals(nic, staff.nic) && Objects.equals(address, staff.address) && Objects.equals(contactNo, staff.contactNo) && Objects.equals(email, staff.email) && Objects.equals(gender, staff.gender) && Objects.equals(staffType, staff.staffType);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, title, firstName, lastName, dob, nic, address, contactNo, email, gender, speciality, medicalLicenseNo, status, licenseEXPDate, users);
+        int result = Objects.hash(id, title, firstName, lastName, dob, nic, address, contactNo, email, gender, staffType, status);
         result = 31 * result + Arrays.hashCode(photo);
         return result;
-    }
-
-    public Collection<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Collection<User> users) {
-        this.users = users;
     }
 }
