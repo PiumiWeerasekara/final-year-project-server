@@ -295,6 +295,29 @@ public class AppointmentController {
 
         return responce;
     }
+
+    @GetMapping(value = "/currentAppointments", produces = "application/json")
+    public List<Appointment> getMyCurrentScheduleAppointments(@RequestParam HashMap<String, String> params) {
+
+        List<Appointment> appointments = this.appointmentDao.findMyCurrentScheduleAppointments();
+
+        if (params.isEmpty()) return appointments;
+
+        String name = params.get("name");
+        String nic = params.get("nic");
+        String appointmentNo = params.get("appointmentNo");
+        Stream<Appointment> estream = appointments.stream();
+
+        if (nic != null) estream = estream.filter(e -> e.getPatient().getNic().contains(nic));
+        if (name != null)
+            estream = estream.filter(e -> e.getPatient().getFirstName().contains(name) || e.getPatient().getLastName().contains(name));
+        if (appointmentNo != null)
+            estream = estream.filter(e -> e.getAppointmentNo() == (Integer.parseInt(appointmentNo)));
+
+        return estream.collect(Collectors.toList());
+
+    }
+
 }
 
 
