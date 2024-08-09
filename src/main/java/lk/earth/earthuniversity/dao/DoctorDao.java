@@ -29,7 +29,7 @@ public interface DoctorDao extends JpaRepository<Doctor,Integer> {
     @Query("UPDATE Doctor s SET s.status = 0 WHERE s.id = :id")
     void updateStatusAsinactive(@Param("id") Integer id);
 
-    @Query("select e from Doctor e where e.staff = :id")
+    @Query("select e from Doctor e where e.staff.id = :id")
     Doctor findByStaffId(@Param("id") Integer id);
 }
 

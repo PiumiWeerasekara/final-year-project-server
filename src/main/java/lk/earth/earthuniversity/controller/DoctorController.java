@@ -82,9 +82,8 @@ public class DoctorController {
 
         if (errors == "") {
             StaffType st = new StaffType();
-            st.setId(4);
+            st.setId(14);
             st.setType("Doctor");
-            doctorDao.save(doctor);
             Staff staff = new Staff();
             staff.setTitle(doctor.getTitle());
             staff.setFirstName(doctor.getFirstName());
@@ -101,6 +100,8 @@ public class DoctorController {
             staff.setStatus(doctor.getStatus());
 
             staffDao.save(staff);
+            doctor.setStaff(staff);
+            doctorDao.save(doctor);
 
         } else errors = "Server Validation Errors : <br> " + errors;
 

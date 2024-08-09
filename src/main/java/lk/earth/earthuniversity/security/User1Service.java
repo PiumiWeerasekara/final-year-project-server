@@ -22,7 +22,10 @@ import java.util.Set;
 public class User1Service implements UserDetailsService {
 
     final User1Dao userdao;
-    private static final String[] VALID_USERNAMES = {"AdminDMC", "RecepDMC", "DoctoDMC", "CountDMC"};
+    private static final String[] VALID_USERNAMES = {"AdminDMC", "AdminDMC01", "AdminDMC02", "AdminDMC03", "AdminDMC04", "AdminDMC05",
+            "RecepDMC", "RecepDMC01", "RecepDMC02", "RecepDMC03", "RecepDMC04","RecepDMC05",
+            "DoctoDMC", "DoctoDMC01", "DoctoDMC02", "DoctoDMC03", "DoctoDMC04", "DoctoDMC05",  "DoctoDMC06", "DoctoDMC07", "DoctoDMC08", "DoctoDMC09", "DoctoDMC10", "DoctoDMC11",  "DoctoDMC12", "DoctoDMC13", "DoctoDMC14", "DoctoDMC15", "DoctoDMC16", "DoctoDMC17", "DoctoDMC18", "DoctoDMC19", "DoctoDMC20",
+            "CountDMC", "CountDMC01", "CountDMC02", "CountDMC03", "CountDMC04", "CountDMC05"};
     @Autowired
     public User1Service(User1Dao userdao) {
         this.userdao = userdao;

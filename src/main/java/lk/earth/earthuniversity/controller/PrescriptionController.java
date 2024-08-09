@@ -3,6 +3,7 @@ package lk.earth.earthuniversity.controller;
 import lk.earth.earthuniversity.dao.AppointmentDao;
 import lk.earth.earthuniversity.dao.PrescriptionDao;
 import lk.earth.earthuniversity.dao.PrescriptionDetailDao;
+import lk.earth.earthuniversity.entity.Appointment;
 import lk.earth.earthuniversity.entity.Prescription;
 import lk.earth.earthuniversity.entity.PrescriptionDetail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +83,7 @@ public class PrescriptionController {
             Prescription savedPrescription = prescriptionDao.save(prescription);
             appointmentDao.updateStatusAsPrescribed(prescription.getAppointment().getId());
             response.put("id", String.valueOf(savedPrescription.getId()));
-            response.put("url", "/prescriptions/" + savedPrescription.getId());
+            response.put("url", "/payments/" + savedPrescription.getId());
         } else {
             errors = "Server Validation Errors: <br> " + errors;
             response.put("errors", errors);
@@ -180,6 +181,33 @@ public class PrescriptionController {
 
 
 //        return newPrescription;
+    }
+
+    @GetMapping(value = "/currentPrescriptionsToPay", produces = "application/json")
+    public List<Prescription> currentPrescriptionsToPay(@RequestParam HashMap<String, String> params) {
+
+
+        List<Prescription> prescriptions = this.prescriptionDao.findAll();
+
+        List<Prescription> filteredPrescriptions = prescriptions.stream()
+                .filter(pat -> pat.getStatus() == 1)
+                .collect(Collectors.toList());
+
+        if (params.isEmpty()) return filteredPrescriptions;
+
+        String name = params.get("name");
+        String ref = params.get("ref");
+        String appointmentNo = params.get("appointmentNo");
+        Stream<Prescription> estream = filteredPrescriptions.stream();
+
+        if (ref != null) estream = estream.filter(e -> e.getReferenceNo().contains(ref));
+        if (name != null)
+            estream = estream.filter(e -> e.getAppointment().getPatient().getFirstName().toLowerCase().contains(name.toLowerCase()) || e.getAppointment().getPatient().getLastName().toLowerCase().contains(name.toLowerCase()));
+        if (appointmentNo != null)
+            estream = estream.filter(e -> e.getAppointment().getAppointmentNo() == (Integer.parseInt(appointmentNo)));
+
+        return estream.collect(Collectors.toList());
+
     }
 }
 

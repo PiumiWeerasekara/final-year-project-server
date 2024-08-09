@@ -3,9 +3,11 @@ package lk.earth.earthuniversity.dao;
 import lk.earth.earthuniversity.entity.Doctor;
 import lk.earth.earthuniversity.entity.Prescription;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,5 +26,10 @@ public interface PrescriptionDao extends JpaRepository<Prescription,Integer> {
 
     @Query(value = "SELECT p.referenceNo FROM Prescription p ORDER BY p.id DESC LIMIT 1", nativeQuery = true)
     String findLastNumber();
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Prescription s SET s.status = 2 WHERE s.id = :id")
+    void updateStatusAsPayed(@Param("id") Integer id);
 }
 
