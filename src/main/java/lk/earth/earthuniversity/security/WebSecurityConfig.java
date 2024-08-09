@@ -1,5 +1,6 @@
 package lk.earth.earthuniversity.security;
 
+import lk.earth.earthuniversity.entity.GlobalSetting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserService userService;
+    private User1Service userService;
 
 
     @Value("${jwt.secret}")
@@ -39,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/AdminEUC").hasRole("ADMIN")
+                .antMatchers("/"+GlobalSetting.getUserName()).hasRole("ADMIN")
                 .antMatchers("/user").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/", "/").permitAll()
                 .and()
@@ -56,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder())
         .and()
                 .inMemoryAuthentication()
-                .withUser("AdminEUC")
+                .withUser(GlobalSetting.getUserName())
                 .password(passwordEncoder().encode("Admin1234"))
                 .roles("ACC");
 

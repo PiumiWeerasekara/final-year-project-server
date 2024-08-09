@@ -35,8 +35,8 @@ public interface AppointmentDao extends JpaRepository<Appointment, Integer> {
     @Query("UPDATE Appointment s SET s.status = 0 WHERE s.id = :id")
     void updateStatus(@Param("id") Integer id);
 
-    @Query(value = "SELECT a.* FROM Appointment a INNER JOIN Schedule s ON a.schedule_id = s.id WHERE s.scheduleDate = CURRENT_DATE AND CURRENT_TIME BETWEEN s.startTime AND s.endTime AND s.status=1 ORDER BY a.appointmentNo ASC", nativeQuery = true)
-    List<Appointment> findMyCurrentScheduleAppointments();
+    @Query(value = "SELECT a.* FROM Appointment a INNER JOIN Schedule s ON a.schedule_id = s.id WHERE s.scheduleDate = CURRENT_DATE AND CURRENT_TIME BETWEEN s.startTime AND s.endTime AND s.status=1 AND s.doctor_id = :id ORDER BY a.appointmentNo ASC ", nativeQuery = true)
+    List<Appointment> findMyCurrentScheduleAppointments(@Param("id") Integer id);
 
 
     @Modifying

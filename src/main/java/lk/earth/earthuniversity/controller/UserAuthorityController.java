@@ -3,6 +3,7 @@ package lk.earth.earthuniversity.controller;
 import lk.earth.earthuniversity.dao.UserDao;
 import lk.earth.earthuniversity.entity.Privilege;
 import lk.earth.earthuniversity.entity.User;
+import lk.earth.earthuniversity.entity.User2;
 import lk.earth.earthuniversity.entity.Userrole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class UserAuthorityController {
     @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.CREATED)
     public List<String> getUserAuthoritiesByUsername(@PathVariable String username) {
-        User user = userdao.findByUsername(username);
+        User2 user = userdao.findByUsername(username);
         List<String> authorities = new ArrayList<>();
 
         if (user != null){

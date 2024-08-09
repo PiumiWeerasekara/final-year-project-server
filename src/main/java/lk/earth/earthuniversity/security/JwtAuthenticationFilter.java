@@ -1,7 +1,8 @@
 package lk.earth.earthuniversity.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lk.earth.earthuniversity.entity.User;
+import lk.earth.earthuniversity.entity.User1;
+import lk.earth.earthuniversity.entity.User2;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,10 +21,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
-    private final UserService userService;
+    private final User1Service userService;
 
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserService userService) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, User1Service userService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -36,7 +37,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             LoginRequest loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
 
-            User user = userService.getByUsername(loginRequest.getUsername());
+            User1 user = userService.getByUsername(loginRequest.getUsername());
 
                 String salt = user.getSalt();
                 String hashedPassword = "";

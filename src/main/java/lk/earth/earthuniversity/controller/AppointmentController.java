@@ -2,6 +2,7 @@ package lk.earth.earthuniversity.controller;
 
 import lk.earth.earthuniversity.dao.AppointmentDao;
 import lk.earth.earthuniversity.dao.DoctorDao;
+import lk.earth.earthuniversity.dao.User1Dao;
 import lk.earth.earthuniversity.entity.*;
 import lk.earth.earthuniversity.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,10 @@ public class AppointmentController {
     private AppointmentDao appointmentDao;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private User1Dao userdao;
+    @Autowired
+    private DoctorDao doctorDao;
 
     @GetMapping(produces = "application/json")
 //    @PreAuthorize("hasAuthority('employee-select')")
@@ -299,7 +304,12 @@ public class AppointmentController {
     @GetMapping(value = "/currentAppointments", produces = "application/json")
     public List<Appointment> getMyCurrentScheduleAppointments(@RequestParam HashMap<String, String> params) {
 
-        List<Appointment> appointments = this.appointmentDao.findMyCurrentScheduleAppointments();
+        String userName = params.get("username");
+
+        int staffId = userdao.findByUsername(userName).getStaff().getId();
+        int docId = doctorDao.findByStaffId(staffId).getId();
+
+        List<Appointment> appointments = this.appointmentDao.findMyCurrentScheduleAppointments(docId);
 
         if (params.isEmpty()) return appointments;
 

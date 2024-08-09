@@ -64,6 +64,12 @@ public class Doctor {
     @Column(name = "status")
     private int status;
 
+    @Column(name = "fee")
+    private double fee;
+
+    @ManyToOne
+    @JoinColumn(name = "staff_id", referencedColumnName = "id", nullable = false)
+    private Staff staff;
     @Basic
     @Column(name = "licenseEXPDate")
     @RegexPattern(reg = "^\\d{2}-\\d{2}-\\d{2}$", msg = "Invalid Date Format")
@@ -76,7 +82,7 @@ public class Doctor {
     public Doctor() {
     }
 
-    public Doctor(Integer id, String title, String firstName, String lastName, byte[] photo, Date dob, String nic, String address, String contactNo, String email, Gender gender, Speciality speciality, String medicalLicenseNo, int status, Date licenseEXPDate) {
+    public Doctor(Integer id, String title, String firstName, String lastName, byte[] photo, Date dob, String nic, String address, String contactNo, String email, Gender gender, Speciality speciality, String medicalLicenseNo, int status, Date licenseEXPDate, Staff staff, double fee) {
         this.id = id;
         this.title = title;
         this.firstName = firstName;
@@ -92,6 +98,8 @@ public class Doctor {
         this.medicalLicenseNo = medicalLicenseNo;
         this.status = status;
         this.licenseEXPDate = licenseEXPDate;
+        this.staff = staff;
+        this.fee = fee;
     }
 
     public Doctor(Integer id, String title, String firstName, String lastName, String nic, String address, String contactNo, Speciality speciality ) {
@@ -225,17 +233,33 @@ public class Doctor {
         this.status = status;
     }
 
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
+
+    public double getFee() {
+        return fee;
+    }
+
+    public void setFee(double fee) {
+        this.fee = fee;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Doctor doctor = (Doctor) o;
-        return status == doctor.status && Objects.equals(id, doctor.id) && Objects.equals(title, doctor.title) && Objects.equals(firstName, doctor.firstName) && Objects.equals(lastName, doctor.lastName) && Arrays.equals(photo, doctor.photo) && Objects.equals(dob, doctor.dob) && Objects.equals(nic, doctor.nic) && Objects.equals(address, doctor.address) && Objects.equals(contactNo, doctor.contactNo) && Objects.equals(email, doctor.email) && Objects.equals(gender, doctor.gender) && Objects.equals(speciality, doctor.speciality) && Objects.equals(medicalLicenseNo, doctor.medicalLicenseNo) && Objects.equals(licenseEXPDate, doctor.licenseEXPDate) && Objects.equals(users, doctor.users);
+        return status == doctor.status && Double.compare(fee, doctor.fee) == 0 && Objects.equals(id, doctor.id) && Objects.equals(title, doctor.title) && Objects.equals(firstName, doctor.firstName) && Objects.equals(lastName, doctor.lastName) && Arrays.equals(photo, doctor.photo) && Objects.equals(dob, doctor.dob) && Objects.equals(nic, doctor.nic) && Objects.equals(address, doctor.address) && Objects.equals(contactNo, doctor.contactNo) && Objects.equals(email, doctor.email) && Objects.equals(gender, doctor.gender) && Objects.equals(speciality, doctor.speciality) && Objects.equals(medicalLicenseNo, doctor.medicalLicenseNo) && Objects.equals(staff, doctor.staff) && Objects.equals(licenseEXPDate, doctor.licenseEXPDate) && Objects.equals(users, doctor.users);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, title, firstName, lastName, dob, nic, address, contactNo, email, gender, speciality, medicalLicenseNo, status, licenseEXPDate, users);
+        int result = Objects.hash(id, title, firstName, lastName, dob, nic, address, contactNo, email, gender, speciality, medicalLicenseNo, status, fee, staff, licenseEXPDate, users);
         result = 31 * result + Arrays.hashCode(photo);
         return result;
     }
