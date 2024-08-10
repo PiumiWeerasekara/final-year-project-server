@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,7 +33,6 @@ public class AppointmentController {
     private DoctorDao doctorDao;
 
     @GetMapping(produces = "application/json")
-//    @PreAuthorize("hasAuthority('employee-select')")
     public List<Appointment> get(@RequestParam HashMap<String, String> params) {
 
         List<Appointment> appointments = this.appointmentDao.findAll();
@@ -42,7 +42,6 @@ public class AppointmentController {
         String name = params.get("name");
         String nic = params.get("nic");
         String doctorId = params.get("docId");
-        //String appointmentDate = params.get("appointmentDate");
         String appointmentNo = params.get("appointmentNo");
         Stream<Appointment> estream = appointments.stream();
 
@@ -50,23 +49,20 @@ public class AppointmentController {
 
         Date appointmentDate = null;
         try {
-            appointmentDate = sdf.parse(params.get("appointmentDate")); // Convert string to Date
+            appointmentDate = sdf.parse(params.get("appointmentDate"));
         } catch (ParseException e) {
-            // Handle the parse exception
             e.printStackTrace();
         }
 
         if (nic != null) estream = estream.filter(e -> e.getPatient().getNic().contains(nic));
         if (name != null)
             estream = estream.filter(e -> e.getPatient().getFirstName().toLowerCase().contains(name.toLowerCase()) || e.getPatient().getLastName().toLowerCase().contains(name.toLowerCase()));
-        //estream = estream.filter(e -> e.getPatient().getFirstName().contains(name) || e.getPatient().getLastName().contains(name));
         if (doctorId != null)
             estream = estream.filter(e -> e.getSchedule().getDoctor().getId() == Integer.parseInt(doctorId));
         if (appointmentDate != null) {
             Date finalScheduleDate = appointmentDate;
             estream = estream.filter(e -> e.getAppointmentDate().equals(finalScheduleDate));
         }
-        //if (appointmentDate != null) estream = estream.filter(e -> e.getAppointmentDate().equals(appointmentDate));
         if (appointmentNo != null)
             estream = estream.filter(e -> e.getAppointmentNo() == (Integer.parseInt(appointmentNo)));
 
@@ -76,7 +72,6 @@ public class AppointmentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasAuthority('Employee-Update')")
     public HashMap<String, String> save(@RequestBody Appointment appointment) {
 
         HashMap<String, String> response = new HashMap<>();
@@ -85,7 +80,6 @@ public class AppointmentController {
         if (errors.isEmpty()) {
             appointmentDao.save(appointment);
 
-            // Send email after saving
             String to = appointment.getPatient().getEmail();
             String subject = "Appointment Confirmation";
             String text = "<html>" +
@@ -113,8 +107,7 @@ public class AppointmentController {
                     "</div>" +
                     "</body>" +
                     "</html>";
-
-            //emailService.sendEmail(to, subject, text);
+            emailService.sendEmail(to, subject, text);
 
         } else {
             errors = "Server Validation Errors : <br> " + errors;
@@ -140,75 +133,13 @@ public class AppointmentController {
         try {
             nextAppointmentNumber = Integer.parseInt(lastAppointmentNumber) + 1;
         } catch (NumberFormatException e) {
-            // Handle the case where the room number is not a valid integer
             throw new IllegalStateException("Invalid appointment number format: " + lastAppointmentNumber, e);
         }
 
         return nextAppointmentNumber;
     }
 
-    //    @GetMapping(path = "/availableSchedules", produces = "application/json")
-//    //@PreAuthorize("hasAuthority('employee-select')")
-//    public List<Object[]> getAvailableAppointments(@RequestParam HashMap<String, String> params) {
-//
-//        List<Object[]> appointments = this.appointmentDao.findAllAvailable();
-//
-//        if(params.isEmpty())  return appointments;
-//
-//        String doctorId= params.get("doctorId");
-//        String scheduleDate= params.get("scheduleDate");
-//        String specialityId= params.get("specialityId");
-//        Stream<Object[]> estream = appointments.stream();
-//
-////        if(doctorId!=null) estream = estream.filter(e -> e.getD==Integer.parseInt(doctorId));
-////        if(scheduleDate!=null) estream = estream.filter(e -> e.getSchedule().getScheduleDate().equals(scheduleDate));
-////        if(specialityId!=null) estream = estream.filter(e -> e.getSchedule().getDoctor().getSpeciality().getId()==Integer.parseInt(specialityId));
-////
-////        return estream.collect(Collectors.toList());
-//        if (doctorId != null) {
-//            int docId = Integer.parseInt(doctorId);
-//            estream = estream.filter(e -> (int) e[3] == docId);
-//        }
-//        if (scheduleDate != null) {
-//            estream = estream.filter(e -> e[0].toString().equals(scheduleDate));
-//        }
-//        if (specialityId != null) {
-//            int specId = Integer.parseInt(specialityId);
-//            estream = estream.filter(e -> (int) e[4] == specId);
-//        }
-//
-//        return estream.collect(Collectors.toList());
-//
-//    }
     @GetMapping(path = "/availableSchedules", produces = "application/json")
-//    public List<AppointmentSearch> availableSchedules(@RequestParam HashMap<String, String> params) {
-//
-//        List<AppointmentSearch> appointments = this.appointmentDao.findAllAvailable();
-//
-//        if (params.isEmpty()) {
-//            return appointments;
-//        }
-//
-//        String doctorId = params.get("doctorId");
-//        String scheduleDate = params.get("scheduleDate");
-//        String specialityId = params.get("specialityId");
-//        Stream<AppointmentSearch> estream = appointments.stream();
-//
-//        if (doctorId != null) {
-//            int docId = Integer.parseInt(doctorId);
-//            estream = estream.filter(e -> e.getDoctorId() == docId);
-//        }
-//        if (scheduleDate != null) {
-//            estream = estream.filter(e -> e.getScheduleDate().equals(scheduleDate));
-//        }
-//        if (specialityId != null) {
-//            int specId = Integer.parseInt(specialityId);
-//            estream = estream.filter(e -> e.getSpecialityId() == specId);
-//        }
-//
-//        return estream.collect(Collectors.toList());
-//    }
-
     public List<AppointmentSearch> getAvailableAppointments(@RequestParam HashMap<String, String> params) {
 
         List<Object[]> results = this.appointmentDao.findAllAvailable();
@@ -250,11 +181,8 @@ public class AppointmentController {
 
     @GetMapping(path = "/lastAppointment", produces = "application/json")
     public Appointment get(@RequestParam("id") Integer scheduleId) {
-
-        //APageable pageable = PageRequest.of(0, 1); // Page number 0, size 1
         List<Appointment> appointments = this.appointmentDao.findLastAppointment(scheduleId);
         return appointments.isEmpty() ? null : appointments.get(0);
-
     }
 
     @PostMapping("/cancel")
@@ -288,7 +216,7 @@ public class AppointmentController {
                     "</body>" +
                     "</html>";
 
-            //emailService.sendEmail(to, subject, text);
+            emailService.sendEmail(to, subject, text);
             appointmentDao.updateStatus(appointment.getId());
 
         } catch (Exception e) {
@@ -325,6 +253,57 @@ public class AppointmentController {
             estream = estream.filter(e -> e.getAppointmentNo() == (Integer.parseInt(appointmentNo)));
 
         return estream.collect(Collectors.toList());
+
+    }
+
+    //dashboad details
+    @GetMapping(value = "/getAllOnGoingSchedules", produces = "application/json")
+    public List<Appointment> getAllOnGoingSchedules() {
+        List<Appointment> ongoingAppointments = appointmentDao.getAllOnGoingSchedules();
+
+//        List<Appointment> combinedAppointments = new List<Appointment>() {
+//        };
+
+        // Add all ongoing appointments to the result list
+//        combinedAppointments.addAll(ongoingAppointments);
+
+        // Step 2: Loop through each ongoing appointment and fetch the next appointment
+//        for (Appointment ongoingAppointment : ongoingAppointments) {
+//            List<Appointment> nextAppointments = appointmentDao.getNext(ongoingAppointment.getSchedule().getId());
+//            if (!nextAppointments.isEmpty()) {
+//
+//                // Step 3: Create and populate the result map
+//                Map<String, Object> resultMap = new HashMap<>();
+//                resultMap.put("ongoingAppointments", ongoingAppointments);
+//                resultMap.put("nextAppointmentNo", nextAppointmentNo);
+//
+//                return resultMap;
+//            }
+//        }
+
+//        return combinedAppointments;
+        return ongoingAppointments;
+
+    }
+
+    @GetMapping(value = "/findMyUpcomingScheduleAppointments", produces = "application/json")
+    public List<Appointment> findMyUpcomingScheduleAppointments(@RequestParam HashMap<String, String> params) {
+
+        String userName = params.get("username");
+
+        int staffId = userdao.findByUsername(userName).getStaff().getId();
+        int docId = doctorDao.findByStaffId(staffId).getId();
+
+        List<Appointment> appointments = this.appointmentDao.findMyUpcomingScheduleAppointments(docId);
+
+        return appointments;
+
+    }
+
+    @GetMapping(path = "/getVisitCountForCurrentYear/{id}", produces = "application/json")
+    public List<Object[]> getVisitCountForCurrentYear(@PathVariable Integer id) {
+        List<Object[]> obj = this.appointmentDao.getVisitCountForCurrentYear(id);
+        return obj;
 
     }
 

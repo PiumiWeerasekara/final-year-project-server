@@ -1,8 +1,6 @@
 package lk.earth.earthuniversity.controller;
 
-import lk.earth.earthuniversity.dao.GenderDao;
 import lk.earth.earthuniversity.dao.SpecialityDao;
-import lk.earth.earthuniversity.entity.Gender;
 import lk.earth.earthuniversity.entity.Speciality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,16 +19,18 @@ public class SpecialityController {
     @Autowired
     private SpecialityDao specialityDao;
 
-    @GetMapping(path ="/list",produces = "application/json")
+    @GetMapping(path = "/list", produces = "application/json")
     public List<Speciality> get() {
 
         List<Speciality> specialities = this.specialityDao.findAll();
 
         specialities = specialities.stream().map(
-                speciality -> { Speciality s = new Speciality();
-                            s.setId(speciality.getId());
-                            s.setName(speciality.getName());
-                            return s; }
+                speciality -> {
+                    Speciality s = new Speciality();
+                    s.setId(speciality.getId());
+                    s.setName(speciality.getName());
+                    return s;
+                }
         ).collect(Collectors.toList());
 
         return specialities;

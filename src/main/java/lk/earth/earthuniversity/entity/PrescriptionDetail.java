@@ -1,10 +1,8 @@
 package lk.earth.earthuniversity.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lk.earth.earthuniversity.util.RegexPattern;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.Objects;
 
 @Entity

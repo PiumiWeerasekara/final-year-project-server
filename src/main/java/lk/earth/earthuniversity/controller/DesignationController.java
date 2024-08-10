@@ -19,16 +19,18 @@ public class DesignationController {
     @Autowired
     private DesignationDao designationdao;
 
-    @GetMapping(path ="/list", produces = "application/json")
+    @GetMapping(path = "/list", produces = "application/json")
     public List<Designation> get() {
 
         List<Designation> designations = this.designationdao.findAll();
 
         designations = designations.stream().map(
-                designation -> { Designation d = new Designation();
+                designation -> {
+                    Designation d = new Designation();
                     d.setId(designation.getId());
                     d.setName(designation.getName());
-                    return d; }
+                    return d;
+                }
         ).collect(Collectors.toList());
 
         return designations;

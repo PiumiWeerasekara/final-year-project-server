@@ -1,7 +1,6 @@
 package lk.earth.earthuniversity.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lk.earth.earthuniversity.dao.AppointmentDao;
 import lk.earth.earthuniversity.util.RegexPattern;
 
 import javax.persistence.*;

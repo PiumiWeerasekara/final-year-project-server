@@ -4,6 +4,7 @@ import lk.earth.earthuniversity.dao.AppointmentDao;
 import lk.earth.earthuniversity.dao.ScheduleDao;
 import lk.earth.earthuniversity.entity.Appointment;
 import lk.earth.earthuniversity.entity.Schedule;
+import lk.earth.earthuniversity.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,10 @@ public class ScheduleController {
     @Autowired
     private AppointmentDao appointmentDao;
 
+    @Autowired
+    private EmailService emailService;
+
     @GetMapping(produces = "application/json")
-    //@PreAuthorize("hasAuthority('employee-select')")
     public List<Schedule> get(@RequestParam HashMap<String, String> params) {
 
         List<Schedule> schedules = this.scheduleDao.findAllNameId();
@@ -42,12 +45,10 @@ public class ScheduleController {
         try {
             scheduleDate = sdf.parse(params.get("scheduleDate")); // Convert string to Date
         } catch (ParseException e) {
-            // Handle the parse exception
             e.printStackTrace();
         }
 
         String doctorId = params.get("doctorId");
-        //String scheduleDate = params.get("scheduleDate");
         String roomId = params.get("roomId");
         Stream<Schedule> estream = schedules.stream();
 
@@ -85,26 +86,10 @@ public class ScheduleController {
 
         HashMap<String, String> responce = new HashMap<>();
         String errors = "";
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//
-//        java.util.Date scheduleDate = schedule.getScheduleDate();
-
         List<Schedule> overlappingSchedules = scheduleDao.checkDoctorAvailability(schedule.getDoctor().getId(), schedule.getScheduleDate(), schedule.getStartTime(), schedule.getEndTime());
-            if (!overlappingSchedules.isEmpty()) {
-                errors = "Doctor is not available";
-            }
-
-//        List<Schedule> sch = scheduleDao.checkDoctorAvailability(schedule.getDoctor().getId(), schedule.getScheduleDate().toString(), schedule.getStartTime(), schedule.getEndTime());
-//        if (!sch.isEmpty()) {
-//            errors = "Doctor is not available";
-//        }
-        //Doctor doc = doctorScheduleDao.findByNic(doctor.getNic());
-
-//        if(emp1!=null && employee.getId()!=emp1.getId())
-//            errors = errors+"<br> Existing Number";
-//        if(doc!=null && doctor.getId()!=doc.getId())
-//            errors = errors+"<br> Existing NIC";
-
+        if (!overlappingSchedules.isEmpty()) {
+            errors = "Doctor is not available";
+        }
         if (errors == "")
             scheduleDao.save(schedule);
         else errors = "Server Validation Errors : <br> " + errors;
@@ -117,7 +102,6 @@ public class ScheduleController {
     }
 
     @GetMapping(path = "/availableSchedules", produces = "application/json")
-    //@PreAuthorize("hasAuthority('employee-select')")
     public List<Schedule> getAvailableSchedules(@RequestParam HashMap<String, String> params) {
 
         List<Schedule> schedules = this.scheduleDao.findAllNameId();
@@ -138,7 +122,6 @@ public class ScheduleController {
 
     }
 
-    //
     @PostMapping("/cancel/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public HashMap<String, String> cancel(@PathVariable Integer id) {
@@ -177,7 +160,7 @@ public class ScheduleController {
                             "</body>" +
                             "</html>";
 
-                    //emailService.sendEmail(to, subject, text);
+                    emailService.sendEmail(to, subject, text);
                     if (i == size - 1) {
                         scheduleDao.updateStatus(id);
                     }
@@ -199,11 +182,8 @@ public class ScheduleController {
 
     @GetMapping(path = "/byScheduleId", produces = "application/json")
     public Optional<Schedule> get(@RequestParam("id") Integer id) {
-
         Schedule schedule = scheduleDao.findByMyId(id);
-
         return Optional.ofNullable(schedule);
-
     }
 }
 

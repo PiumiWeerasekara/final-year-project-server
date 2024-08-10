@@ -1,20 +1,13 @@
 package lk.earth.earthuniversity.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lk.earth.earthuniversity.util.RegexPattern;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Time;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Schedule{
+public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -43,7 +36,7 @@ public class Schedule{
     @Column(name = "status")
     private Integer status;
 
-    public Schedule(){
+    public Schedule() {
 
     }
 

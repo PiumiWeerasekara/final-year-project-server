@@ -1,7 +1,6 @@
 package lk.earth.earthuniversity.controller;
 
 import lk.earth.earthuniversity.dao.RoomDao;
-import lk.earth.earthuniversity.entity.Doctor;
 import lk.earth.earthuniversity.entity.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ public class RoomController {
     private RoomDao roomDao;
 
     @GetMapping(produces = "application/json")
-//    @PreAuthorize("hasAuthority('employee-select')")
     public List<Room> get(@RequestParam HashMap<String, String> params) {
 
         List<Room> rooms = this.roomDao.findAll();
@@ -36,7 +34,6 @@ public class RoomController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasAuthority('Employee-Update')")
     public HashMap<String, String> save(@RequestBody Room room) {
 
         HashMap<String, String> responce = new HashMap<>();
@@ -89,11 +86,8 @@ public class RoomController {
         try {
             nextRoomNumberInt = Integer.parseInt(lastRoomNumber) + 1;
         } catch (NumberFormatException e) {
-            // Handle the case where the room number is not a valid integer
             throw new IllegalStateException("Invalid room number format: " + lastRoomNumber, e);
         }
-
-        // Format the new room number to 5 digits, zero-padded
         return String.format("%05d", nextRoomNumberInt);
     }
 }

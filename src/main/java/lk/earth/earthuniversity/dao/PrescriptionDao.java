@@ -1,6 +1,5 @@
 package lk.earth.earthuniversity.dao;
 
-import lk.earth.earthuniversity.entity.Doctor;
 import lk.earth.earthuniversity.entity.Prescription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,16 +10,16 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-public interface PrescriptionDao extends JpaRepository<Prescription,Integer> {
+public interface PrescriptionDao extends JpaRepository<Prescription, Integer> {
 
     Optional<Prescription> findByAppointmentId(Integer appointmentId);
 
     @Query("select p from Prescription p where p.appointment.id = :id")
     Optional<Prescription> findByAppointment(Integer id);
+
     @Query("select p from Prescription p where p.id = :id")
     Prescription findByMyId(@Param("id") Integer id);
 
-    //@Query("SELECT NEW Doctor (d.id, d.title, d.firstName, d.lastName, d.photo, d.dob, d.nic, d.address, d.contactNo, d.email, d.gender, d.speciality, d.medicalLicenseNo, d.licenseEXPDate ) FROM Doctor d")
     @Query("SELECT p from Prescription p WHERE p.status = 1")
     List<Prescription> findAllNameId();
 
@@ -31,5 +30,9 @@ public interface PrescriptionDao extends JpaRepository<Prescription,Integer> {
     @Transactional
     @Query("UPDATE Prescription s SET s.status = 2 WHERE s.id = :id")
     void updateStatusAsPayed(@Param("id") Integer id);
+
+    //reports
+    @Query("select p from Prescription p where p.appointment.patient.id = :id ORDER BY p.prescribedDate desc")
+    List<Prescription> prescriptionListByPatient(@Param("id") Integer id);
 }
 

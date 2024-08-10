@@ -1,7 +1,6 @@
 package lk.earth.earthuniversity.controller;
 
 import lk.earth.earthuniversity.dao.DoctorDao;
-import lk.earth.earthuniversity.dao.EmployeeDao;
 import lk.earth.earthuniversity.dao.ScheduleDao;
 import lk.earth.earthuniversity.dao.StaffDao;
 import lk.earth.earthuniversity.entity.*;
@@ -30,7 +29,6 @@ public class DoctorController {
     private StaffDao staffDao;
 
     @GetMapping(produces = "application/json")
-//    @PreAuthorize("hasAuthority('employee-select')")
     public List<Doctor> get(@RequestParam HashMap<String, String> params) {
 
         List<Doctor> doctors = this.doctorDao.findAll();
@@ -49,7 +47,6 @@ public class DoctorController {
             estream = estream.filter(e -> e.getFirstName().toLowerCase().contains(name.toLowerCase()) || e.getLastName().toLowerCase().contains(name.toLowerCase()));
 
         return estream.collect(Collectors.toList());
-
     }
 
     @GetMapping(path = "/list", produces = "application/json")
@@ -68,7 +65,6 @@ public class DoctorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasAuthority('Employee-Update')")
     public HashMap<String, String> save(@RequestBody Doctor doctor) {
 
         HashMap<String, String> responce = new HashMap<>();
@@ -76,8 +72,6 @@ public class DoctorController {
 
         Doctor doc = doctorDao.findByNic(doctor.getNic());
 
-//        if(emp1!=null && employee.getId()!=emp1.getId())
-//            errors = errors+"<br> Existing Number";
         if (doc != null && doctor.getId() != doc.getId()) errors = errors + "<br> Existing NIC";
 
         if (errors == "") {

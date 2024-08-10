@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface DrugDao extends JpaRepository<Doctor,Integer> {
+public interface DrugDao extends JpaRepository<Doctor, Integer> {
 
     @Query("SELECT d from Drug d")
     List<Drug> findAllNameId();

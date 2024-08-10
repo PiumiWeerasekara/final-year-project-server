@@ -1,6 +1,5 @@
 package lk.earth.earthuniversity.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lk.earth.earthuniversity.util.RegexPattern;
 
 import javax.persistence.*;

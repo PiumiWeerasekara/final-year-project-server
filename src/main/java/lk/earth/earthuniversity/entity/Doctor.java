@@ -102,7 +102,7 @@ public class Doctor {
         this.fee = fee;
     }
 
-    public Doctor(Integer id, String title, String firstName, String lastName, String nic, String address, String contactNo, Speciality speciality ) {
+    public Doctor(Integer id, String title, String firstName, String lastName, String nic, String address, String contactNo, Speciality speciality) {
         this.id = id;
         this.title = title;
         this.firstName = firstName;

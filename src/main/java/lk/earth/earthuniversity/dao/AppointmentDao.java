@@ -19,14 +19,8 @@ public interface AppointmentDao extends JpaRepository<Appointment, Integer> {
     @Query(value = "SELECT a.appointmentNo FROM Appointment a WHERE a.schedule_id = :scheduleId ORDER BY a.id DESC LIMIT 1", nativeQuery = true)
     String findLastAppointmentNumber(@Param("scheduleId") int scheduleId);
 
-    //    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate > CURRENT_DATE GROUP BY a.schedule ORDER BY a.appointmentDate ASC")
-    //@Query(value = "SELECT s.scheduleDate, s.startTime, COALESCE(a.appointmentNo+1, 1) as NextAppointmentNo, s.doctor_id, d.speciality_id FROM schedule s LEFT JOIN appointment a ON s.id = a.schedule_id INNER JOIN Doctor d ON s.doctor_id = d.id WHERE s.scheduleDate > CURRENT_DATE ORDER BY s.scheduleDate ASC", nativeQuery = true)
-//    @Query(value = "SELECT new lk.earth.earthuniversity.AppointmentSearch(s.scheduleDate, s.startTime, COALESCE(a.appointmentNo + 1, '0'), s.doctor_id, d.speciality_id) FROM schedule s LEFT JOIN appointment a ON s.id = a.schedule_id INNER JOIN doctor d ON s.doctor_id = d.id WHERE s.scheduleDate > CURRENT_DATE ORDER BY s.scheduleDate ASC", nativeQuery = true)
     @Query(value = "SELECT s.scheduleDate, s.startTime, COALESCE(MAX(a.appointmentNo) + 1, 1) AS appointmentNo, s.id, s.doctor_id, d.speciality_id, s.noOfPatient FROM schedule s LEFT JOIN appointment a ON s.id = a.schedule_id INNER JOIN Doctor d ON s.doctor_id = d.id WHERE (s.scheduleDate > CURRENT_DATE OR (s.scheduleDate = CURRENT_DATE AND s.endTime > CURRENT_TIME)) AND s.status = 1 GROUP BY  s.id ORDER BY s.scheduleDate ASC", nativeQuery = true)
     List<Object[]> findAllAvailable();
-
-//    @Query(value = "SELECT s.scheduleDate, s.startTime, COALESCE(a.appointmentNo + 1, 0) AS nextAppointmentNo, s.doctor_id, d.speciality_id FROM schedule s LEFT JOIN appointment a ON s.id = a.schedule_id INNER JOIN doctor d ON s.doctor_id = d.id WHERE s.scheduleDate > CURRENT_DATE ORDER BY s.scheduleDate ASC", nativeQuery = true)
-//    List<Object[]> findScheduleAndAppointments();
 
     @Query("SELECT a FROM Appointment a WHERE a.schedule.id = :scheduleId ORDER BY a.id DESC")
     List<Appointment> findLastAppointment(@Param("scheduleId") int scheduleId);
@@ -52,5 +46,28 @@ public interface AppointmentDao extends JpaRepository<Appointment, Integer> {
 
     @Query(value = "SELECT a.* FROM Appointment a WHERE a.appointmentDate > CURRENT_DATE AND a.status=1 AND a.patient_id = :id", nativeQuery = true)
     List<Appointment> findUpcomingAppointmentsByPatientID(Integer id);
+
+
+    //Dashboad details
+    @Query(value = "SELECT a.* FROM Appointment a  INNER JOIN Schedule s ON a.schedule_id = s.id  WHERE s.scheduleDate = CURRENT_DATE AND CURRENT_TIME BETWEEN s.startTime AND s.endTime AND a.appointmentNo = (SELECT MAX(a2.appointmentNo) FROM Appointment a2 WHERE a2.schedule_id = s.id )", nativeQuery = true)
+    List<Appointment> getAllOnGoingSchedules();
+
+    @Query(value = "SELECT a.* FROM Appointment a  INNER JOIN Schedule s ON a.schedule_id = s.id  WHERE s.scheduleDate = CURRENT_DATE AND CURRENT_TIME BETWEEN s.startTime AND s.endTime  AND s.status = 3 group by s.id order by appointmentNo desc limit 1", nativeQuery = true)
+    List<Appointment> getNext();
+
+    @Query(value = "SELECT a.* FROM Appointment a INNER JOIN Schedule s ON a.schedule_id = s.id WHERE (s.scheduleDate = CURRENT_DATE AND CURRENT_TIME < s.startTime) OR (s.scheduleDate > CURRENT_DATE) AND s.status=1 AND s.doctor_id = :id ORDER BY a.appointmentNo ASC ", nativeQuery = true)
+    List<Appointment> findMyUpcomingScheduleAppointments(@Param("id") Integer id);
+
+    @Query(value = "SELECT MONTH(a.appointmentDate) as month, COUNT(a.id) as visitCount " +
+            "FROM Appointment a " +
+            "WHERE a.patient_id = :id AND YEAR(a.appointmentDate) = YEAR(CURDATE()) " +
+            "GROUP BY MONTH(a.appointmentDate)",
+            nativeQuery = true)
+    List<Object[]> getVisitCountForCurrentYear(@Param("id") Integer id);
+
+
+
+
+
 }
 

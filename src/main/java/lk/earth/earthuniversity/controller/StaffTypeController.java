@@ -19,16 +19,18 @@ public class StaffTypeController {
     @Autowired
     private StaffTypeDao staffTypeDao;
 
-    @GetMapping(path ="/list",produces = "application/json")
+    @GetMapping(path = "/list", produces = "application/json")
     public List<StaffType> get() {
 
         List<StaffType> types = this.staffTypeDao.findAll();
 
         types = types.stream().map(
-                type -> { StaffType s = new StaffType();
-                            s.setId(type.getId());
-                            s.setType(type.getType());
-                            return s; }
+                type -> {
+                    StaffType s = new StaffType();
+                    s.setId(type.getId());
+                    s.setType(type.getType());
+                    return s;
+                }
         ).collect(Collectors.toList());
 
         return types;

@@ -2,7 +2,6 @@ package lk.earth.earthuniversity.controller;
 
 import lk.earth.earthuniversity.dao.ScheduleDao;
 import lk.earth.earthuniversity.dao.StaffDao;
-import lk.earth.earthuniversity.entity.Schedule;
 import lk.earth.earthuniversity.entity.Staff;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,7 +41,6 @@ public class StaffController {
             estream = estream.filter(e -> e.getFirstName().toLowerCase().contains(name.toLowerCase()) || e.getLastName().toLowerCase().contains(name.toLowerCase()));
 
         return estream.collect(Collectors.toList());
-
     }
 
     @GetMapping(path = "/list", produces = "application/json")
@@ -63,7 +61,6 @@ public class StaffController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasAuthority('Employee-Update')")
     public HashMap<String, String> save(@RequestBody Staff staff) {
 
         HashMap<String, String> responce = new HashMap<>();
@@ -71,8 +68,6 @@ public class StaffController {
 
         Staff doc = staffDao.findByNic(staff.getNic());
 
-//        if(emp1!=null && employee.getId()!=emp1.getId())
-//            errors = errors+"<br> Existing Number";
         if (doc != null && staff.getId() != doc.getId())
             errors = errors + "<br> Existing NIC";
 
@@ -95,13 +90,8 @@ public class StaffController {
 
         Staff staff = staffDao.findByMyId(id);
 
-        //List<Staff> sch = scheduleDao.findUpComingSchedulesByDoctorID(id);
-
         if (staff == null)
             errors = errors + "<br> Staff Does Not Existed";
-
-//        else if(staff.size()>0)
-//            errors = errors+"Doctor has upcoming Schedules";
 
         if (errors == "") staffDao.updateStatusAsinactive(id);
         else errors = "Server Validation Errors : <br> " + errors;

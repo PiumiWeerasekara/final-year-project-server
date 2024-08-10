@@ -10,9 +10,10 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-public interface PatientDao extends JpaRepository<Patient,Integer> {
+public interface PatientDao extends JpaRepository<Patient, Integer> {
 
     Patient findByNic(String nic);
+
     Optional<Patient> findById(Integer id);
 
     @Query("select p from Patient p where p.id = :id")

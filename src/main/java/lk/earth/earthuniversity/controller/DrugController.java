@@ -21,8 +21,7 @@ public class DrugController {
     @Autowired
     private DrugDao drugDao;
 
-    @GetMapping(path ="/list", produces = "application/json")
-//    @PreAuthorize("hasAuthority('employee-select')")
+    @GetMapping(path = "/list", produces = "application/json")
     public List<Drug> get(@RequestParam HashMap<String, String> params) {
 
         List<Drug> drugs = this.drugDao.findAllNameId();
@@ -30,7 +29,7 @@ public class DrugController {
         drugs = drugs.stream().map(
                 drug -> {
                     Drug d = new Drug(drug.getId(), drug.getName());
-                    return  d;
+                    return d;
                 }
         ).collect(Collectors.toList());
 
